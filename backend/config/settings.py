@@ -88,10 +88,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:5174',
-]
+# Cross-Origin Resource Sharing
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:5173').split(',')
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='').split(',') if config('CSRF_TRUSTED_ORIGINS', default='') else []
 
 ROOT_URLCONF = 'config.urls'
 
@@ -200,7 +199,6 @@ STORAGES = {
 
 # Required by your installed cloudinary_storage collectstatic command
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-
 
 # Media files uploaded by users/admin
 MEDIA_URL = '/media/'
