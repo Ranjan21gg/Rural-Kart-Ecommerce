@@ -10,5 +10,8 @@ wheels/
 .git/
 *.md
 
+media/
+staticfiles/
+
 # Virtual environments
 .venv
