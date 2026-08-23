@@ -1,0 +1,65 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: ruralkart-db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ruralkart
+      POSTGRES_USER: ruralkart_user
+      POSTGRES_PASSWORD: ruralkart_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+# Redis service for Celery
+  redis:
+    image: redis:7-alpine
+    container_name: ruralkart-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+
+# Backend service
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8000:8000"
+    volumes:
+      - static_volume:/app/staticfiles
+
+
+# Celery worker service
+  celery:
+    build: ./backend
+    container_name: ruralkart-celery
+    command: celery -A config worker --loglevel=info
+    env_file: ./backend/.env
+    depends_on:
+      - db
+      - redis
+
+
+# Frontend service
+frontend:
+    build: 
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000/api
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  static_volume:
