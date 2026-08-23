@@ -5,9 +5,9 @@ services:
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: ruralkart
-      POSTGRES_USER: ruralkart_user
-      POSTGRES_PASSWORD: ruralkart_password
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
 
     ports:
       - "5432:5432"
@@ -42,7 +42,7 @@ services:
   celery:
     build: ./backend
     container_name: ruralkart-celery
-    command: celery -A config worker --loglevel=info
+    entrypoint: ["./entrypoint-celery.sh"]
     env_file: ./backend/.env
     depends_on:
       - db

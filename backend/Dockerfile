@@ -16,6 +16,8 @@ COPY . .
 
 ENV PATH="/app/.venv/bin:$PATH"
 
+RUN chmod +x entrypoint.sh entrypoint-celery.sh
+
 EXPOSE 8000
 
 ENTRYPOINT ["./entrypoint.sh"]
