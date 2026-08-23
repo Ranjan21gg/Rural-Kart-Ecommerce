@@ -92,8 +92,6 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='https://rural-kart-ecommerce.vercel.app').split(',')
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='https://rural-kart-ecommerce.vercel.app').split(',') if config('CSRF_TRUSTED_ORIGINS', default='') else []
 
-CORS_ALLOW_CREDENTIALS = True
-
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
