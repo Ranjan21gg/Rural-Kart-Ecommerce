@@ -187,8 +187,8 @@ export default function Navbar() {
                 className={`flex items-center w-full bg-slate-50 
                   border rounded-full transition-all 
                   ${searchFocused
-                  ? 'bg-white border-sky-400 ring-4 ring-sky-100/80'
-                  : 'border-slate-400 hover:border-slate-300'
+                    ? 'bg-white border-sky-400 ring-4 ring-sky-100/80'
+                    : 'border-slate-400 hover:border-slate-300'
                   }`}
               >
                 <Search className="ml-4 w-4 h-4 text-slate-500 shrink-0" />

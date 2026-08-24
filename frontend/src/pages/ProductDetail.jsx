@@ -124,7 +124,7 @@ export default function ProductDetail() {
   const lowStock = product.stock_quantity > 0 && product.stock_quantity <= 5;
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 sm:py-6 sm:pt-3 text-slate-800">
+    <div className="min-h-screen bg-slate-50 py-4 sm:py-6 sm:pt-3 text-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Breadcrumb Navigation */}
@@ -145,7 +145,7 @@ export default function ProductDetail() {
         {/* Product Showcase Dual Column */}
         <div className="w-full max-w-full min-w-0 overflow-hidden bg-white rounded-3xl p-4 sm:p-5 lg:p-6 border border-slate-200/80 shadow-sm mb-12">
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 min-w-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 md:grid-cols-2 gap-6 lg:gap-10 min-w-0">
 
             {/* Left Column: Image */}
             <div className="lg:col-span-5 min-w-0">
@@ -294,17 +294,9 @@ export default function ProductDetail() {
                       <button
                         onClick={handleAddToCart}
                         disabled={outOfStock || adding}
-                        className="
-                  w-full min-w-0
-                  flex-1
-                  py-3 px-4
-                  rounded-xl
-                  bg-amber-500 hover:bg-amber-600
-                  text-white font-bold text-sm
-                  transition
-                  flex items-center justify-center gap-2
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                "
+                        className="w-full min-w-0 flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600
+                        text-white font-bold text-sm transition flex items-center justify-center gap-2
+                        disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {adding ? (
                           <Loader2 className="w-4 h-4 shrink-0 animate-spin" />
@@ -321,18 +313,10 @@ export default function ProductDetail() {
                       <button
                         onClick={handleBuyNow}
                         disabled={outOfStock || adding}
-                        className="
-                  w-full min-w-0
-                  flex-1
-                  py-3 px-4
-                  rounded-xl
-                  bg-sky-500 hover:bg-sky-600
-                  text-white font-bold text-sm
-                  shadow-md shadow-sky-500/20
-                  transition
-                  flex items-center justify-center gap-2
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                "
+                        className="w-full min-w-0 flex-1 py-3 px-4 rounded-xl bg-sky-500 hover:bg-sky-600
+                         text-white font-bold text-sm shadow-md shadow-sky-500/20
+                         transition flex items-center justify-center gap-2
+                         disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Zap className="w-4 h-4 shrink-0" />
 
@@ -349,22 +333,13 @@ export default function ProductDetail() {
 
                   <Link
                     to="/login"
-                    className="
-              w-full min-w-0
-              block
-              text-center
-              py-3.5 px-4
-              rounded-xl
-              bg-slate-900 hover:bg-slate-800
-              text-white font-bold text-sm
-              transition shadow-lg
-            "
+                    className="w-full min-w-0 block text-center py-3.5 px-4 rounded-xl
+                    bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm
+                     transition shadow-lg"
                   >
                     Sign in to Purchase
                   </Link>
-
                 )}
-
 
                 {/* Message */}
                 {message && (
@@ -375,9 +350,7 @@ export default function ProductDetail() {
                     </span>
                   </div>
                 )}
-
               </div>
-
 
               {/* Trust Badges */}
               <div className="grid grid-cols-3 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100 text-center min-w-0">

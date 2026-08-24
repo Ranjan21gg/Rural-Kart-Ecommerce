@@ -88,72 +88,91 @@ export default function Cart() {
   const progressToFreeShipping = Math.min((totalAmount / freeShippingThreshold) * 100, 100);
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 sm:py-4 text-slate-800">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-0">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 py-6 sm:py-8 text-slate-800">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-0">
 
         {/* Page Title */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 min-w-0">
+
+          <div className="min-w-0">
             <PageHeader
-              bg={'bg-sky-500'}
+              bg="bg-sky-500"
               icon={<ShoppingCart size={21} />}
-              title={'Shopping Cart'}
-              description={'Review your chosen products before checkout'}
+              title="Shopping Cart"
+              description="Review your chosen products before checkout"
             />
           </div>
 
           {!isEmpty && (
-            <Link
-              to="/"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-sky-600 hover:text-sky-700 bg-sky-50 px-3.5 py-2 rounded-xl transition"
-            >
-              <ArrowLeft className="w-4 h-4" /> Continue Shopping
+            <Link to="/" className="hidden sm:inline-flex shrink-0 items-center justify-center gap-1.5 text-xs font-bold text-sky-600 hover:text-sky-700 bg-sky-50 px-3.5 py-2 rounded-xl transition">
+              <ArrowLeft className="w-4 h-4 shrink-0" />
+              <span>Continue Shopping</span>
             </Link>
           )}
+
         </div>
 
         {isEmpty ? (
+
           /* Empty Cart View */
-          <div className="py-20 text-center bg-white rounded-3xl border border-sky-100 shadow-sm max-w-xl mx-auto px-6">
-            <h2 className="text-2xl font-black text-slate-900">Your Cart is Empty</h2>
-            <p className="text-sm text-slate-500 mt-2 max-w-sm mx-auto">
+          <div className="w-full max-w-xl mx-auto py-16 sm:py-20 px-5 sm:px-6 text-center bg-white rounded-3xl border border-sky-100 shadow-sm">
+
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900">
+              Your Cart is Empty
+            </h2>
+
+            <p className="text-sm text-slate-500 mt-2 max-w-sm mx-auto leading-relaxed">
               Explore authentic handcrafted ceramics, handloom silk, and organic products directly from rural artisans.
             </p>
-            <Link
-              to="/"
-              className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-sky-500/25 transition"
-            >
-              <Sparkles className="w-4 h-4 text-amber-300" /> Browse Marketplace
+
+            <Link to="/" className="mt-6 inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 bg-linear-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-sky-500/25 transition">
+              <Sparkles className="w-4 h-4 text-amber-300 shrink-0" />
+              <span>Browse Marketplace</span>
             </Link>
+
           </div>
+
         ) : (
+
           /* Cart Content Layout */
-          <div className="grid lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-start min-w-0 w-full max-w-full">
 
             {/* Left Column: Items List */}
-            <div className="lg:col-span-7 space-y-4">
+            <div className="lg:col-span-7 min-w-0 w-full max-w-full space-y-4">
 
               {/* Free Shipping Tracker */}
-              <div className="p-4 rounded-2xl bg-white border border-sky-100 shadow-sm">
-                <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-1.5">
-                  <span className="flex items-center gap-1.5 text-sky-600">
-                    <Truck className="w-4 h-4" />
-                    {totalAmount >= freeShippingThreshold
-                      ? 'You unlocked FREE Rural Express Shipping!'
-                      : `Add ₹${freeShippingThreshold - totalAmount} more for FREE Shipping`}
+              <div className="w-full max-w-full min-w-0 p-3.5 sm:p-4 rounded-2xl bg-white border border-sky-100 shadow-sm">
+
+                <div className="flex items-start justify-between gap-3 text-xs font-bold text-slate-700 mb-2 min-w-0">
+
+                  <span className="flex items-start gap-1.5 min-w-0 flex-1 text-sky-600 leading-relaxed">
+
+                    <Truck className="w-4 h-4 shrink-0 mt-0.5" />
+
+                    <span className="min-w-0 wrap-break-word">
+                      {totalAmount >= freeShippingThreshold
+                        ? 'You unlocked FREE Rural Express Shipping!'
+                        : `Add ₹${freeShippingThreshold - totalAmount} more for FREE Shipping`}
+                    </span>
+
                   </span>
-                  <span className="text-slate-400">{Math.round(progressToFreeShipping)}%</span>
+
+                  <span className="shrink-0 text-slate-400">
+                    {Math.round(progressToFreeShipping)}%
+                  </span>
+
                 </div>
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div
-                    className="bg-linear-to-r from-sky-400 to-sky-600 h-full rounded-full transition-all duration-500"
-                    style={{ width: `${progressToFreeShipping}%` }}
-                  />
+
+                <div className="w-full max-w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div className="bg-linear-to-r from-sky-400 to-sky-600 h-full rounded-full transition-all duration-500" style={{ width: `${progressToFreeShipping}%` }} />
                 </div>
+
               </div>
 
+
               {/* Items List */}
-              <div className="space-y-3">
+              <div className="w-full max-w-full min-w-0 space-y-3">
+
                 {cart.items.map((item) => (
                   <CartItemRow
                     key={item.id}
@@ -163,99 +182,150 @@ export default function Cart() {
                     updating={updatingId === item.id}
                   />
                 ))}
+
               </div>
 
             </div>
 
 
             {/* Right Column: Summary Card */}
-            <div className="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-lg shadow-sky-500/5 space-y-4">
+            <div className="lg:col-span-5 w-full max-w-full min-w-0 lg:sticky lg:top-6">
 
-              <h3 className="text-lg font-black text-slate-900 pb-2 border-b border-slate-200">
-                Order Summary
-              </h3>
+              <div className="w-full max-w-full min-w-0 bg-white rounded-3xl p-4 sm:p-5 lg:p-6 border border-slate-200/80 shadow-lg shadow-sky-500/5 space-y-4 overflow-hidden">
 
-              {/* Price breakdown */}
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between text-slate-600">
-                  <span>Subtotal ({cart.items.length} items)</span>
-                  <span className="font-bold text-slate-900">₹{totalAmount.toLocaleString('en-IN')}</span>
-                </div>
+                <h3 className="text-base sm:text-lg font-black text-slate-900 pb-3 border-b border-slate-200">
+                  Order Summary
+                </h3>
 
-                <div className="flex items-center justify-between text-slate-600">
-                  <span>Estimated Shipping</span>
-                  <span className="font-bold text-emerald-600">
-                    {totalAmount >= freeShippingThreshold ? 'FREE' : '₹50'}
-                  </span>
-                </div>
+                {/* Price Breakdown */}
+                <div className="space-y-3 text-sm min-w-0">
 
-                <div className="flex items-center justify-between text-slate-600">
-                  <span>GST / Tax</span>
-                  <span className="font-medium text-slate-500">Included</span>
-                </div>
+                  <div className="flex items-center justify-between gap-3 text-slate-600 min-w-0">
+                    <span className="min-w-0 wrap-break-word">
+                      Subtotal ({cart.items.length} items)
+                    </span>
 
-                {couponApplied && (
-                  <div className="flex items-center justify-between text-emerald-600 font-semibold bg-emerald-50 p-2 rounded-xl text-xs">
-                    <span>Artisan Special Discount</span>
-                    <span>-₹50</span>
+                    <span className="shrink-0 font-bold text-slate-900">
+                      ₹{totalAmount.toLocaleString('en-IN')}
+                    </span>
                   </div>
-                )}
-              </div>
 
-              {/* Coupon Box */}
-              <form onSubmit={handleApplyCoupon} className="pt-2">
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
-                      type="text"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      placeholder="Promo / Coupon code"
-                      className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-400 uppercase font-bold"
-                    />
+                  <div className="flex items-center justify-between gap-3 text-slate-600 min-w-0">
+                    <span className="min-w-0 wrap-break-word">
+                      Estimated Shipping
+                    </span>
+
+                    <span className="shrink-0 font-bold text-emerald-600">
+                      {totalAmount >= freeShippingThreshold ? 'FREE' : '₹50'}
+                    </span>
                   </div>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition"
-                  >
-                    Apply
-                  </button>
-                </div>
-              </form>
 
-              {/* Grand Total */}
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div>
-                  <span className="text-xs text-slate-500 font-medium block">Total Payable</span>
-                  <span className="text-2xl font-black text-slate-900">
-                    ₹{(totalAmount + (totalAmount >= freeShippingThreshold ? 0 : 50) - (couponApplied ? 50 : 0)).toLocaleString('en-IN')}
+
+                  <div className="flex items-center justify-between gap-3 text-slate-600 min-w-0">
+                    <span className="min-w-0 wrap-break-word">
+                      GST / Tax
+                    </span>
+
+                    <span className="shrink-0 font-medium text-slate-500">
+                      Included
+                    </span>
+                  </div>
+
+
+                  {couponApplied && (
+                    <div className="flex items-center justify-between gap-3 text-emerald-600 font-semibold bg-emerald-50 p-2.5 rounded-xl text-xs min-w-0">
+
+                      <span className="min-w-0 wrap-break-word">
+                        Artisan Special Discount
+                      </span>
+
+                      <span className="shrink-0">
+                        -₹50
+                      </span>
+
+                    </div>
+                  )}
+
+                </div>
+
+
+                {/* Coupon Box */}
+                <form onSubmit={handleApplyCoupon} className="pt-1 w-full max-w-full min-w-0">
+
+                  <div className="flex items-stretch gap-2 w-full max-w-full min-w-0">
+
+                    <div className="relative flex-1 min-w-0">
+
+                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        placeholder="Promo / Coupon code"
+                        className="w-full min-w-0 max-w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-400 uppercase font-bold"
+                      />
+
+                    </div>
+
+                    <button type="submit" className="shrink-0 px-3 sm:px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition">
+                      Apply
+                    </button>
+
+                  </div>
+
+                </form>
+
+
+                {/* Grand Total */}
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3 min-w-0">
+
+                  <div className="min-w-0">
+
+                    <span className="text-xs text-slate-500 font-medium block">
+                      Total Payable
+                    </span>
+
+                    <span className="text-xl sm:text-2xl font-black text-slate-900 wrap-break-word">
+                      ₹{(totalAmount + (totalAmount >= freeShippingThreshold ? 0 : 50) - (couponApplied ? 50 : 0)).toLocaleString('en-IN')}
+                    </span>
+
+                  </div>
+
+                  <span className="shrink-0 whitespace-nowrap text-[9px] sm:text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 sm:px-2.5 py-1 rounded-full">
+                    Razorpay Secured
                   </span>
+
                 </div>
-                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-                  Razorpay Secured
-                </span>
-              </div>
 
-              {/* Checkout Button */}
-              <button
-                type="button"
-                onClick={() => navigate('/checkout')}
-                className="w-full py-4 rounded-2xl bg-linear-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white font-black text-sm shadow-xl shadow-sky-500/25 transition flex items-center justify-center gap-2 group"
-              >
-                <span>Proceed to Checkout</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
 
-              {/* Security note */}
-              <div className="flex items-center justify-center gap-2 text-xs text-slate-400 pt-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                <span>Encrypted 256-bit Razorpay Checkout</span>
+                {/* Checkout Button */}
+                <button type="button" onClick={() => navigate('/checkout')} className="w-full max-w-full min-w-0 py-3.5 sm:py-4 px-3 rounded-2xl bg-linear-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white font-black text-sm shadow-xl shadow-sky-500/25 transition flex items-center justify-center gap-2 group">
+                  <span className="min-w-0 truncate">
+                    Proceed to Checkout
+                  </span>
+
+                  <ArrowRight className="w-4 h-4 shrink-0 group-hover:translate-x-1 transition-transform" />
+                </button>
+
+
+                {/* Security Note */}
+                <div className="flex items-start justify-center gap-2 text-[11px] sm:text-xs text-slate-400 pt-1 text-center min-w-0">
+
+                  <ShieldCheck className="w-4 h-4 shrink-0 text-emerald-500 mt-0.5" />
+
+                  <span className="min-w-0 wrap-break-word">
+                    Encrypted 256-bit Razorpay Checkout
+                  </span>
+                  
+                </div>
+
               </div>
 
             </div>
 
           </div>
+
         )}
 
       </div>

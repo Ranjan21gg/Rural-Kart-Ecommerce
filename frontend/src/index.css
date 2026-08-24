@@ -16,23 +16,18 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  html,
-  body,
-  #root {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-  }
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
 
-  body {
-    background-color: #f8fafc;
-    color: #0f172a;
-    overflow-x: hidden;
-  }
-
-  #root {
-    overflow-x: hidden;
-  }
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
 }
 
 /* Custom 2026 Design System Utility Classes */
