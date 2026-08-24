@@ -16,9 +16,6 @@ import {
 } from 'lucide-react';
 import PageHeader from '../componenets/PageHeader';
 
-// const POLL_INTERVAL_MS = 2000;
-// const POLL_TIMEOUT_MS = 60000;
-
 export default function Checkout() {
   const [addressMode, setAddressMode] = useState('saved');
   const [address, setAddress] = useState('');
@@ -42,34 +39,6 @@ export default function Checkout() {
       });
   }, []);
 
-  // const pollPaymentStatus = (orderId) => {
-  //   setStage('polling');
-  //   const startedAt = Date.now();
-
-  //   const interval = setInterval(async () => {
-  //     if (Date.now() - startedAt > POLL_TIMEOUT_MS) {
-  //       clearInterval(interval);
-  //       setStage('failed');
-  //       setError("We haven't confirmed your payment yet. Check your Orders page in a few minutes.");
-  //       return;
-  //     }
-
-  //     try {
-  //       const res = await fetchPaymentStatus(orderId);
-  //       // console.log("PAYMENT STATUS:", res.data);
-  //       if (res.data.order_status === 'paid') {
-  //         clearInterval(interval);
-  //         navigate(`/orders/${orderId}`, { state: { justPaid: true } });
-  //       } else if (res.data.order_status === 'cancelled') {
-  //         clearInterval(interval);
-  //         setStage('failed');
-  //         setError('Payment was not completed. Your order was cancelled.');
-  //       }
-  //     } catch {
-  //       // network hiccup fallback
-  //     }
-  //   }, POLL_INTERVAL_MS);
-  // };
 
   // buy now data from current id
   const location = useLocation();
