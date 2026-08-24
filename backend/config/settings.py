@@ -89,8 +89,8 @@ MIDDLEWARE = [
 ]
 
 # Cross-Origin Resource Sharing
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='https://rural-kart-ecommerce.vercel.app').split(',')
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='https://rural-kart-ecommerce.vercel.app').split(',') if config('CSRF_TRUSTED_ORIGINS', default='') else []
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:5173').split(',')
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:5173').split(',') if config('CSRF_TRUSTED_ORIGINS', default='') else []
 
 ROOT_URLCONF = 'config.urls'
 
