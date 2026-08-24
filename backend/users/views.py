@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions
 from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import status
 
 # Create your views here.
 

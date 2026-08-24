@@ -34,7 +34,6 @@ class CheckoutView(APIView):
 
         if product_id:
             # BUY NOW
-
             try:
                 quantity = int(quantity or 1)
 
@@ -69,24 +68,17 @@ class CheckoutView(APIView):
 
         else:
             # CART CHECKOUT
-
             try:
                 cart = Cart.objects.get(
                     user=request.user
                 )
             except Cart.DoesNotExist:
-                return Response(
-                    {'detail': 'Cart is empty.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({'detail': 'Cart is empty.'}, status=status.HTTP_400_BAD_REQUEST)
 
             cart_items = cart.items.select_related('product').all()
 
             if not cart_items.exists():
-                return Response(
-                    {'detail': 'Cart is empty.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({'detail': 'Cart is empty.'}, status=status.HTTP_400_BAD_REQUEST)
 
             checkout_items = [
                 {
@@ -150,6 +142,11 @@ class CheckoutView(APIView):
             # 5. Create pending order
             # -------------------------------------------------
 
+            # Save address to user's profile
+            request.user.shipping_address = shipping_address
+            request.user.save(update_fields=["shipping_address"])
+
+            # Create order
             order = Order.objects.create(
                 user=request.user,
                 total_amount=total,

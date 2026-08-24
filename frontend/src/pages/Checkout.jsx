@@ -30,7 +30,6 @@ export default function Checkout() {
     fetchMe()
       .then((res) => {
         const saved = res.data.shipping_address || '';
-
         setSavedAddress(saved);
         setAddress(saved);
       })
