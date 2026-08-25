@@ -42,11 +42,8 @@ export default function Cart() {
     setUpdatingId(itemId);
     try {
       const res = await updateCartItem(itemId, newQuantity);
-
       setCart(res.data);
-
       await refreshCartCount();
-
     } finally {
       setUpdatingId(null);
     }
@@ -56,7 +53,11 @@ export default function Cart() {
     setUpdatingId(itemId);
     try {
       await removeCartItem(itemId);
-      await loadCart();
+      setCart((prev) => ({
+        ...prev,
+        items: prev.items.filter((item) => item.id !== itemId),
+      }));
+      await refreshCartCount();
     } finally {
       setUpdatingId(null);
     }
@@ -220,7 +221,6 @@ export default function Cart() {
                     </span>
                   </div>
 
-
                   <div className="flex items-center justify-between gap-3 text-slate-600 min-w-0">
                     <span className="min-w-0 wrap-break-word">
                       GST / Tax
@@ -317,7 +317,7 @@ export default function Cart() {
                   <span className="min-w-0 wrap-break-word">
                     Encrypted 256-bit Razorpay Checkout
                   </span>
-                  
+
                 </div>
 
               </div>
