@@ -142,9 +142,6 @@ export default function Navbar() {
             to="/"
             className="flex items-center gap-2.5 group shrink-0"
           >
-            {/* <div className="w-10 h-10 rounded-xl bg-linear-to-br from-sky-500 to-sky-700 flex items-center justify-center text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
-              <ShoppingBag className="w-5 h-5 stroke-[2.2]" />
-            </div> */}
             <div>
               <span className="text-xl font-extrabold tracking-tight bg-linear-to-r from-sky-600 via-sky-700 to-slate-900 bg-clip-text text-transparent">
                 RuralKart
@@ -156,25 +153,6 @@ export default function Navbar() {
           </Link>
 
           {/* Quick Search Bar in Header */}
-          {/* <form
-            onSubmit={handleNavSearch}
-            className="hidden md:flex flex-1 max-w-md relative mx-4"
-          >
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search rural crafts, pottery, organic produce..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-full py-2 pl-4 pr-10 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-400 focus:bg-white focus:ring-4 focus:ring-sky-100/60 transition"
-            />
-            <button
-              type="submit"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-sky-500 hover:bg-sky-600 text-white flex items-center justify-center transition"
-            >
-              <Search className="w-3.5 h-3.5" />
-            </button>
-          </form> */}
-
           <form
             ref={searchRef}
             onSubmit={handleNavSearch}

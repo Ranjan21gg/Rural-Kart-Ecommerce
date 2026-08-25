@@ -20,10 +20,13 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
 
     class Meta:
-        unique_together = ('cart', 'product') # one row per product per cart
-
-    class Meta:
         ordering = ["id"]
+        constraints = [
+        models.UniqueConstraint(
+            fields=['cart', 'product'],
+            name='unique_cart_product'
+        )
+    ]
         
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"

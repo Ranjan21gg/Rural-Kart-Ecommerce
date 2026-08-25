@@ -63,9 +63,6 @@ class RazorpayWebhookView(APIView):
                 order.status = Order.Status.PAID
                 order.save(update_fields=['status'])
 
-                # Send cofirmation mail after order save via Celery
-                send_order_confirmation_email.delay(payment.order.id)
-
         elif event == 'payment.failed':
             payment_entity = request.data['payload']['payment']['entity']
 
@@ -230,6 +227,11 @@ class VerifyPaymentView(APIView):
         # 9. Mark order paid
         order.status = Order.Status.PAID
         order.save(update_fields=['status'])
+
+        # Send confirmation email after transaction commits
+        transaction.on_commit(
+            lambda: send_order_confirmation_email.delay(order.id)
+            )
 
         # 10. Clear cart
         Cart.objects.filter(user=request.user).delete()
