@@ -117,12 +117,31 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 import dj_database_url
 
+import dj_database_url
+
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL', default=f"postgresql://{config('DB_USER', default='postgres')}:{config('DB_PASSWORD', default='')}@{config('DB_HOST', default='localhost')}:{config('DB_PORT', default='5432')}/{config('DB_NAME', default='backend_db')}"),
+        default=config(
+            'DATABASE_URL',
+            default=(
+                f"postgresql://"
+                f"{config('DB_USER', default='postgres')}:"
+                f"{config('DB_PASSWORD', default='')}@"
+                f"{config('DB_HOST', default='db')}:"
+                f"{config('DB_PORT', default='5432')}/"
+                f"{config('DB_NAME', default='backend_db')}"
+            )
+        ),
         conn_max_age=600,
     )
 }
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=config('DATABASE_URL', default=f"postgresql://{config('DB_USER', default='postgres')}:{config('DB_PASSWORD', default='')}@{config('DB_HOST', default='localhost')}:{config('DB_PORT', default='5432')}/{config('DB_NAME', default='backend_db')}"),
+#         conn_max_age=600,
+#     )
+# }
 
 # Razorpay Credentials
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
