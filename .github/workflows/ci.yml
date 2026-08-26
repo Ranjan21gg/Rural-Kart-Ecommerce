@@ -6,59 +6,87 @@ on:
     branches: [main]
 jobs:
   backend-check:
-    name: Backend Check
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_DB: ruralkart
-          POSTGRES_USER: ruralkart_user
-          POSTGRES_PASSWORD: ruralkart_ci_password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U ruralkart_user -d ruralkart"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    defaults:
-      run:
-        working-directory: ./backend
-    env:
-      SECRET_KEY: ci-test-secret-key
-      DEBUG: "True"
-      DB_NAME: ruralkart
-      DB_USER: ruralkart_user
-      DB_PASSWORD: ruralkart_ci_password
-      DB_HOST: localhost
-      DB_PORT: 5432
-      RAZORPAY_KEY_ID: rzp_test_dummy
-      RAZORPAY_KEY_SECRET: dummy_secret
-      RAZORPAY_WEBHOOK_SECRET: dummy_webhook_secret
-      CLOUDINARY_CLOUD_NAME: dummy_cloud
-      CLOUDINARY_API_KEY: dummy_key
-      CLOUDINARY_API_SECRET: dummy_secret
-      CELERY_BROKER_URL: redis://localhost:6379/0
-      CELERY_RESULT_BACKEND: redis://localhost:6379/0
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-      - name: Install dependencies
-        run: uv sync --frozen
-      - name: Run Django system checks
-        run: uv run python manage.py check
-      - name: Run migrations
-        run: uv run python manage.py migrate --noinput
-      - name: Build backend Docker image
-        run: docker build -t rural-kart-backend .
-  frontend-build:
+  name: Backend Check
+  runs-on: ubuntu-latest
+
+  services:
+    postgres:
+      image: postgres:17-alpine
+      env:
+        POSTGRES_DB: ruralkart
+        POSTGRES_USER: ruralkart_user
+        POSTGRES_PASSWORD: ruralkart_ci_password
+      ports:
+        - 5432:5432
+      options: >-
+        --health-cmd "pg_isready -U ruralkart_user -d ruralkart"
+        --health-interval 10s
+        --health-timeout 5s
+        --health-retries 5
+
+    redis:
+      image: redis:7-alpine
+      ports:
+        - 6379:6379
+      options: >-
+        --health-cmd "redis-cli ping"
+        --health-interval 10s
+        --health-timeout 5s
+        --health-retries 5
+
+  defaults:
+    run:
+      working-directory: ./backend
+
+  env:
+    SECRET_KEY: ci-test-secret-key
+    DEBUG: "True"
+
+    DB_NAME: ruralkart
+    DB_USER: ruralkart_user
+    DB_PASSWORD: ruralkart_ci_password
+    DB_HOST: localhost
+    DB_PORT: 5432
+
+    RAZORPAY_KEY_ID: rzp_test_dummy
+    RAZORPAY_KEY_SECRET: dummy_secret
+    RAZORPAY_WEBHOOK_SECRET: dummy_webhook_secret
+
+    CLOUDINARY_CLOUD_NAME: dummy_cloud
+    CLOUDINARY_API_KEY: dummy_key
+    CLOUDINARY_API_SECRET: dummy_secret
+
+    CELERY_BROKER_URL: redis://localhost:6379/0
+    CELERY_RESULT_BACKEND: redis://localhost:6379/0
+
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+
+    - name: Install dependencies
+      run: uv sync --frozen
+
+    - name: Run Django system checks
+      run: uv run python manage.py check
+
+    - name: Check for missing migrations
+      run: uv run python manage.py makemigrations --check --dry-run
+
+    - name: Run migrations
+      run: uv run python manage.py migrate --noinput
+
+    - name: Build backend Docker image
+      run: docker build -t rural-kart-backend .
+      
+frontend-build:
     name: Frontend Build
     runs-on: ubuntu-latest
     defaults:
