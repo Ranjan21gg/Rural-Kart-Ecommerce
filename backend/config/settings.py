@@ -117,8 +117,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 import dj_database_url
 
-import dj_database_url
-
 DATABASES = {
     'default': dj_database_url.config(
         default=config(
@@ -169,7 +167,7 @@ EMAIL_HOST_USER = config('BREVO_SMTP_LOGIN')
 EMAIL_HOST_PASSWORD = config('BREVO_SMTP_KEY')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 RURAL_KART_LOGO_URL = config('RURAL_KART_LOGO_URL')
-RURAL_KART_FRONTEND_URL = "https://rural-kart-ecommerce.vercel.app/"
+RURAL_KART_FRONTEND_URL = "https://rural-kart-ecommerce.vercel.app"
 
 
 # Password validation

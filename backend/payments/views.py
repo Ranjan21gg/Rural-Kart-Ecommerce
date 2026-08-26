@@ -228,14 +228,15 @@ class VerifyPaymentView(APIView):
         order.status = Order.Status.PAID
         order.save(update_fields=['status'])
 
-        # Send confirmation email after transaction commits
-        transaction.on_commit(
-            lambda: send_order_confirmation_email.delay(order.id)
-            )
-
         # 10. Clear cart
         Cart.objects.filter(user=request.user).delete()
 
+        # 11. Send confirmation email after transaction commits
+        transaction.on_commit(
+            lambda: send_order_confirmation_email(order.id)
+            )
+
+        # 12. Return success response
         return Response({
             'success': True,
             'order_id': order.id,
