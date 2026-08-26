@@ -56,6 +56,9 @@ def send_order_confirmation_email(order_id):
         to=[order.user.email],
     )
     email.attach_alternative(html_message,'text/html')
-    email.send()
+    try:
+        email.send()
+    except Exception as exc:
+        return f"Failed to send confirmation email for order {order_id}: {exc}"
 
     return f"Confirmation email sent for order {order_id}"
