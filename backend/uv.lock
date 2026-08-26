@@ -57,6 +57,7 @@ dependencies = [
     { name = "python-decouple" },
     { name = "razorpay" },
     { name = "redis" },
+    { name = "requests" },
     { name = "whitenoise" },
 ]
 
@@ -78,6 +79,7 @@ requires-dist = [
     { name = "python-decouple", specifier = ">=3.8" },
     { name = "razorpay", specifier = ">=2.0.1" },
     { name = "redis", specifier = ">=8.1.0" },
+    { name = "requests", specifier = ">=2.32.0" },
     { name = "whitenoise", specifier = ">=6.12.0" },
 ]
 

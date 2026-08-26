@@ -2,8 +2,8 @@
 
 from celery import shared_task
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+import requests
 
 
 @shared_task
@@ -11,17 +11,17 @@ def send_order_confirmation_email(order_id):
     from .models import Order
 
     try:
-        order = (Order.objects.select_related('user')
+        order = (
+            Order.objects
+            .select_related('user')
             .prefetch_related('items__product')
             .get(id=order_id)
         )
     except Order.DoesNotExist:
         return f"Order {order_id} no longer exists."
 
-    # Email subject
     subject = f"Rural-Kart | Order #{order.id} confirmed"
 
-    # Plain-text fallback
     text_message = (
         f"Hi {order.user.username},\n\n"
         f"Your order #{order.id} has been confirmed and paid.\n\n"
@@ -38,27 +38,53 @@ def send_order_confirmation_email(order_id):
         f"/orders/{order.id}"
     )
 
-    # HTML email
     html_message = render_to_string(
         'emails/order_confirmation.html',
         {
             'order': order,
             'logo_url': settings.RURAL_KART_LOGO_URL,
-            "order_url": order_url,
+            'order_url': order_url,
         }
     )
 
-    # Send email
-    email = EmailMultiAlternatives(
-        subject=subject,
-        body=text_message,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[order.user.email],
-    )
-    email.attach_alternative(html_message,'text/html')
-    try:
-        email.send()
-    except Exception as exc:
-        return f"Failed to send confirmation email for order {order_id}: {exc}"
+    payload = {
+        "sender": {
+            "email": settings.DEFAULT_FROM_EMAIL,
+            "name": "Rural-Kart",
+        },
+        "to": [
+            {
+                "email": order.user.email,
+                "name": order.user.username,
+            }
+        ],
+        "subject": subject,
+        "htmlContent": html_message,
+        "textContent": text_message,
+    }
 
-    return f"Confirmation email sent for order {order_id}"
+    headers = {
+        "accept": "application/json",
+        "api-key": settings.BREVO_API_KEY,
+        "content-type": "application/json",
+    }
+
+    try:
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email",
+            headers=headers,
+            json=payload,
+            timeout=10,
+        )
+
+        response.raise_for_status()
+
+        data = response.json()
+
+        return (
+            f"Confirmation email sent for order {order_id}. "
+            f"Message ID: {data.get('messageId')}"
+        )
+
+    except requests.RequestException as exc:
+        return f"Failed to send email for order {order_id}: {exc}"
