@@ -56,13 +56,17 @@ export default function ProductDetail() {
   // add buy handler
   const handleBuyNow = async () => {
     if (outOfStock || adding) return;
-
-    try {
-      await handleAddToCart();
-      navigate('/checkout');
-    } catch (error) {
-      console.error('Buy Now failed:', error);
+    if (!user) {
+      navigate('/login');
+      return;
     }
+    navigate('/checkout', {
+      state: {
+        buyNow: true,
+        productId: product.id,
+        quantity: quantity,
+      },
+    });
   };
 
   // add to cart handler
