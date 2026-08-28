@@ -40,18 +40,30 @@ export function AuthProvider({ children }) {
   }, [refreshCartCount]);
 
   const login = async (username, password) => {
-    const res = await api.post('/auth/login/', { username, password });
+    const res = await api.post('/auth/login/', {
+      username,
+      password,
+    });
+
+    // Save JWT tokens
     localStorage.setItem('access_token', res.data.access);
     localStorage.setItem('refresh_token', res.data.refresh);
 
-    const payload = JSON.parse(atob(res.data.access.split('.')[1]));
-    const userData = { username, role: payload.role || 'customer' };
+    // Get complete authenticated user data
+    const userRes = await api.get('/auth/me/');
+    const userData = userRes.data;
+
+    // Save user data
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
+
+    // Refresh cart count
     await refreshCartCount();
+
     return userData;
   };
 
+  
   const register = async (username, email, password) => {
     await api.post('/auth/register/', { username, email, password });
     return login(username, password);

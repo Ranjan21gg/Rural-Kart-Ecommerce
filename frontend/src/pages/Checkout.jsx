@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { checkout, buyNow, fetchPaymentStatus } from '../services/orders';
+import { checkout, buyNow } from '../services/orders';
 import { verifyPayment } from '../services/payments';
 import { fetchMe } from '../services/auth';
 import {

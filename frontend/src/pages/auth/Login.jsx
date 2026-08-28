@@ -2,15 +2,12 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-  ShoppingBag,
   User,
   Lock,
   Eye,
   EyeOff,
   AlertCircle,
   ArrowRight,
-  Sparkles,
-  ShieldCheck,
 } from 'lucide-react';
 
 export default function Login() {
@@ -29,7 +26,7 @@ export default function Login() {
     try {
       await login(username, password);
       navigate('/');
-    } catch {
+    } catch {y
       setError('Invalid username or password credentials.');
     } finally {
       setSubmitting(false);
