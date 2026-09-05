@@ -49,6 +49,12 @@ export default function AIAssistant() {
     }, [isOpen]);
 
 
+    // Close chatbot and navigate to product
+    const handleProductClick = (slug) => {
+        setIsOpen(false);
+        navigate(`/products/${slug}`);
+    };
+
 
     const handleSend = async (e) => {
         e.preventDefault();
@@ -328,11 +334,7 @@ export default function AIAssistant() {
 
                                                                 <button
                                                                     type="button"
-                                                                    onClick={() =>
-                                                                        navigate(
-                                                                            `/products/${product.slug}`
-                                                                        )
-                                                                    }
+                                                                    onClick={() => handleProductClick(product.slug)}
                                                                     className="
                                                                         mt-1.5
                                                                         text-xs
