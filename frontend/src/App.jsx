@@ -15,6 +15,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminPayments from './pages/admin/AdminPayments';
 import ScrollToTop from './componenets/ScrollToTop';
+import AIAssistant from './componenets/AIAssistant';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <BrowserRouter>
         {/* <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800"> */}
         <Navbar />
+        <AIAssistant />
         {/* <main className="flex-1"> */}
         <ScrollToTop />
         <Routes>

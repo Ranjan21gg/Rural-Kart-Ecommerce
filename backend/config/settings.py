@@ -30,6 +30,7 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+OPENAI_API_KEY = config('OPENAI_API_KEY')
 
 # Authenticated User
 AUTH_USER_MODEL = 'users.User'
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'users',
     'orders',
     'payments',
+    'ai_assistant',
 
     'django.contrib.admin',
     'django.contrib.auth',
