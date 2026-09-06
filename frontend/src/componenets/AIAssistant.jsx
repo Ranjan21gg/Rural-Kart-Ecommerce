@@ -107,13 +107,13 @@ export default function AIAssistant() {
             {isOpen && (
                 <div
                     ref={chatRef}
-                    className="fixed bottom-4 sm:bottom-8 right-4 sm:right-5 z-50
+                    className="fixed bottom-15 sm:bottom-8 right-4 sm:right-5 z-50
                     w-[calc(100vw-2rem)] sm:w-95.5 max-w-97.5"
                 >
                     <div
                         className=" bg-white rounded-3xl shadow-2xl
                             border border-slate-200 overflow-hidden
-                            flex flex-col sm:h-[min(650px,calc(100vh-8rem))]"
+                            flex flex-col sm:h-[min(650px,calc(100vh-9rem))]"
                     >
                         {/* ==========
                             HEADER
@@ -443,7 +443,7 @@ export default function AIAssistant() {
                 <button
                     type="button"
                     onClick={() => setIsOpen(true)}
-                    className="fixed bottom-18 right-5 z-50 w-15 h-15 sm:w-16 sm:h-16 rounded-full
+                    className="fixed bottom-40 right-5 z-50 w-15 h-15 sm:w-16 sm:h-16 rounded-full
                     bg-sky-500 hover:bg-sky-600 text-white shadow-xl shadow-sky-500/30
                     border-2 border-white flex items-center justify-center hover:scale-105
                     active:scale-95 transition-all duration-200 animate-ai-ring"
