@@ -443,7 +443,7 @@ export default function AIAssistant() {
                 <button
                     type="button"
                     onClick={() => setIsOpen(true)}
-                    className="fixed bottom-40 right-5 z-50 w-15 h-15 sm:w-16 sm:h-16 rounded-full
+                    className="fixed bottom-20 right-5 z-50 w-15 h-15 sm:w-16 sm:h-16 rounded-full
                     bg-sky-500 hover:bg-sky-600 text-white shadow-xl shadow-sky-500/30
                     border-2 border-white flex items-center justify-center hover:scale-105
                     active:scale-95 transition-all duration-200 animate-ai-ring"
