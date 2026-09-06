@@ -107,13 +107,13 @@ export default function AIAssistant() {
             {isOpen && (
                 <div
                     ref={chatRef}
-                    className="fixed bottom-8 right-4 sm:right-5 z-50
-                    w-[calc(100vw-2rem)] sm:w-97.5 max-w-97.5"
+                    className="fixed bottom-4 sm:bottom-8 right-4 sm:right-5 z-50
+                    w-[calc(100vw-2rem)] sm:w-95.5 max-w-97.5"
                 >
                     <div
                         className=" bg-white rounded-3xl shadow-2xl
                             border border-slate-200 overflow-hidden
-                            flex flex-col h-[min(650px,calc(100vh-7rem))]"
+                            flex flex-col sm:h-[min(650px,calc(100vh-8rem))]"
                     >
                         {/* ==========
                             HEADER
@@ -175,21 +175,14 @@ export default function AIAssistant() {
                             MESSAGES
                         ============== */}
                         <div
-                            className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50"
+                            className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 pb-0"
                         >
                             {/* Empty state */}
                             {messages.length === 0 && (
                                 <div className="flex flex-col items-center justify-center h-full text-center px-6">
 
-                                    <div
-                                        className="w-16 h-16 rounded-3xl bg-sky-100
-                                            text-sky-500 flex items-center justify-center mb-4"
-                                    >
-                                        <Bot className="w-8 h-8" />
-                                    </div>
-
-                                    <h4 className="font-extrabold text-slate-900 text-base">
-                                        Hi! I'm RuralKart AI 👋
+                                    <h4 className="font-extrabold text-base text-sky-500 flex items-center justify-center">
+                                        <Bot className="w-8 h-8 mr-1" /> Hi! I'm RuralKart AI 👋
                                     </h4>
 
                                     <p className="text-xs text-slate-500 mt-2 leading-relaxed max-w-xs">
