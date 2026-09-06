@@ -107,13 +107,13 @@ export default function AIAssistant() {
             {isOpen && (
                 <div
                     ref={chatRef}
-                    className="fixed bottom-15 sm:bottom-8 right-4 sm:right-5 z-50
+                    className="fixed bottom-8 sm:bottom-8 right-4 sm:right-5 z-50
                     w-[calc(100vw-2rem)] sm:w-95.5 max-w-97.5"
                 >
                     <div
                         className=" bg-white rounded-3xl shadow-2xl
                             border border-slate-200 overflow-hidden
-                            flex flex-col sm:h-[min(650px,calc(100vh-9rem))]"
+                            flex flex-col h-[min(650px,calc(100vh-9rem))]"
                     >
                         {/* ==========
                             HEADER
@@ -175,7 +175,7 @@ export default function AIAssistant() {
                             MESSAGES
                         ============== */}
                         <div
-                            className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 pb-0"
+                            className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50"
                         >
                             {/* Empty state */}
                             {messages.length === 0 && (
