@@ -443,10 +443,10 @@ export default function AIAssistant() {
                 <button
                     type="button"
                     onClick={() => setIsOpen(true)}
-                    className="fixed bottom-5 right-5 z-50 w-15 h-15 sm:w-16 sm:h-16 rounded-full
+                    className="fixed bottom-18 right-5 z-50 w-15 h-15 sm:w-16 sm:h-16 rounded-full
                     bg-sky-500 hover:bg-sky-600 text-white shadow-xl shadow-sky-500/30
                     border-2 border-white flex items-center justify-center hover:scale-105
-                    active:scale-95 transition-all duration-200"
+                    active:scale-95 transition-all duration-200 animate-ai-ring"
                     aria-label="Open RuralKart AI"
                 >
                     {/* Bot icon */}
@@ -455,14 +455,14 @@ export default function AIAssistant() {
                     {/* AI sparkle */}
                     <span
                         className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-white
-                         text-sky-500 flex items-center justify-center shadow-md"
+                         text-sky-500 flex items-center justify-center shadow-md animate-sparkle"
                     >
                         <Sparkles className="w-3.5 h-3.5" />
                     </span>
 
                     {/* Online indicator */}
                     <span className="absolute bottom-0 right-0 w-4 h-4 
-                    rounded-full bg-emerald-400 border-2 border-white"/>
+                    rounded-full bg-emerald-400 border-2 border-white animate-online"/>
                 </button>
             )}
         </>

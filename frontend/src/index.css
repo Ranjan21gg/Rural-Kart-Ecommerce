@@ -31,7 +31,7 @@ body {
 }
 
 /* Custom 2026 Design System Utility Classes */
-@utility bg-mesh-sky {
+/* @utility bg-mesh-sky {
   background-image:
     radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
     radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.12) 0px, transparent 50%),
@@ -60,7 +60,7 @@ body {
 
 @utility badge-pulse {
   animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+} */
 
 @keyframes pulse-ring {
   0%,
@@ -89,4 +89,52 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #0ea5e9;
+}
+
+
+
+
+/* Bot button glow and sparkle */
+@keyframes ai-ring {
+    0%, 50%, 100% {
+        box-shadow: 0 0 0 0 rgba(234, 148, 1, 0.985);
+    }
+
+    50% {
+        box-shadow: 0 0 0 7px rgba(245, 158, 11, 0);
+    }
+}
+
+.animate-ai-ring {
+    animation: ai-ring 2.5s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(1.15) rotate(12deg);
+    }
+}
+
+@keyframes online {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 0 5px rgba(52, 211, 153, 0);
+    }
+}
+
+.animate-sparkle {
+    animation: sparkle 1.8s ease-in-out infinite;
+}
+
+.animate-online {
+    animation: online 2s ease-in-out infinite;
 }
