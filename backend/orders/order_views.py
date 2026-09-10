@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from products.models import Product
 from .models import Cart, Order, OrderItem
 from .serializers import OrderSerializer
+from config.pagination import SmallResultsPagination
 import razorpay
 from django.conf import settings
 from payments.models import Payment
@@ -208,6 +209,7 @@ class CheckoutView(APIView):
 class OrderListView(generics.ListAPIView):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = SmallResultsPagination
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).order_by('-created_at')
@@ -233,6 +235,7 @@ from .serializers import AdminOrderSerializer, OrderStatusUpdateSerializer
 class AdminOrderListView(generics.ListAPIView):
     serializer_class = AdminOrderSerializer
     permission_classes = [IsAdminRole]
+    pagination_class = SmallResultsPagination
     queryset = Order.objects.select_related('user').prefetch_related('items').order_by('-created_at')
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['status']

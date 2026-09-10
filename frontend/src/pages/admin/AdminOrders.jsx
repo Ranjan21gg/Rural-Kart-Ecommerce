@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { fetchAllOrders, updateOrderStatus } from '../../services/admin';
 import OrderItems from '../../componenets/admin/OrderItems';
 import {
@@ -14,6 +15,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import PageHeader from '../../componenets/PageHeader';
+import Pagination from '../../componenets/Pagination';
 
 const NEXT_STATUS = {
   pending: ['paid', 'cancelled'],
@@ -43,31 +45,42 @@ const ACTION_STYLES = {
   paid: 'bg-emerald-600 hover:bg-emerald-700 text-white',
   shipped: 'bg-sky-600 hover:bg-sky-700 text-white',
   delivered: 'bg-slate-900 hover:bg-slate-800 text-white',
-  cancelled:
-    'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200',
+  cancelled: 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200',
 };
+
+const PAGE_SIZE = 5
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
-  const [statusFilter, setStatusFilter] = useState('');
   const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [pageData, setPageData] = useState({ count: 0, next: null, previous: null });
+
+  const statusFilter = searchParams.get('status') || '';
+  const page = parseInt(searchParams.get('page') || '1', 10);
+
 
   const loadOrders = async () => {
     setLoading(true);
     setError('');
 
     try {
-      const res = await fetchAllOrders(
-        statusFilter ? { status: statusFilter } : {}
-      );
+      const params = { page };
+      if (statusFilter) params.status = statusFilter;
 
+      const res = await fetchAllOrders(params);
       setOrders(res.data.results ?? res.data);
+      setPageData({
+        count: res.data.count ?? res.data.length,
+        next: res.data.next ?? null,
+        previous: res.data.previous ?? null,
+      });
     } catch (err) {
       setError(
-        err.response?.data?.detail ||
-        'Could not load customer orders.'
+        err.response?.data?.detail || 'Could not load customer orders.'
       );
     } finally {
       setLoading(false);
@@ -76,7 +89,28 @@ export default function AdminOrders() {
 
   useEffect(() => {
     loadOrders();
-  }, [statusFilter]);
+  }, [statusFilter, page]);
+
+
+  const setPage = (updater) => {
+    const newPage = typeof updater === 'function' ? updater(page) : updater;
+    const next = new URLSearchParams(searchParams);
+    next.set('page', newPage);
+    setSearchParams(next);
+    window.scrollTo({ top: 0 });
+  };
+
+  const handleStatusFilterChange = (value) => {
+    const next = new URLSearchParams(searchParams);
+    if (value) {
+      next.set('status', value);
+    } else {
+      next.delete('status');
+    }
+    next.delete('page');
+    setSearchParams(next);
+  };
+
 
   const handleStatusChange = async (orderId, newStatus) => {
     setUpdatingId(orderId);
@@ -104,7 +138,7 @@ export default function AdminOrders() {
             HEADER
         ====================================================== */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-0">
-          
+
           {/* Title */}
           <PageHeader
             className={'mb-6'}
@@ -124,7 +158,7 @@ export default function AdminOrders() {
 
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => handleStatusFilterChange(e.target.value)}
               className="bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer capitalize"
             >
               <option value="">All Orders</option>
@@ -185,236 +219,243 @@ export default function AdminOrders() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <>
+            <div className="space-y-3">
 
-            {orders.map((order) => {
-              const nextOptions =
-                NEXT_STATUS[order.status] || [];
+              {orders.map((order) => {
+                const nextOptions =
+                  NEXT_STATUS[order.status] || [];
 
-              const badgeClass =
-                STATUS_STYLES[order.status] ||
-                STATUS_STYLES.pending;
+                const badgeClass =
+                  STATUS_STYLES[order.status] ||
+                  STATUS_STYLES.pending;
 
-              const StatusIcon =
-                STATUS_ICONS[order.status] || Package;
+                const StatusIcon =
+                  STATUS_ICONS[order.status] || Package;
 
-              return (
-                <div
-                  key={order.id}
-                  className=" bg-white rounded-2xl border border-slate-200 shadow-sm
+                return (
+                  <div
+                    key={order.id}
+                    className=" bg-white rounded-2xl border border-slate-200 shadow-sm
                     overflow-hidden hover:border-slate-300 hover:shadow-md
                     transition-all duration-200"
-                >
-                  <div className="grid lg:grid-cols-5">
-
-                    {/* =================================================
-                        LEFT — ORDER INFORMATION
-                    ================================================== */}
-                    <div className="lg:col-span-2 p-4 sm:p-5 border-b lg:border-b-0 lg:border-r border-slate-100">
-
-                      {/* Order Header */}
-                      <div className="flex items-start justify-between gap-3 mb-5">
-
-                        <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                            Order
-                          </p>
-
-                          <h2 className="text-lg font-bold text-slate-900 mt-0.5">
-                            #{order.id}
-                          </h2>
-                        </div>
-
-                        <span
-                          className={`
-                            inline-flex items-center gap-1.5
-                            px-2.5 py-1
-                            rounded-full
-                            border
-                            text-[11px]
-                            font-semibold
-                            capitalize
-                            ${badgeClass}
-                          `}
-                        >
-                          <StatusIcon className="w-3.5 h-3.5" />
-                          {order.status}
-                        </span>
-                      </div>
-
-                      {/* Customer */}
-                      <div className="mb-4">
-                        <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                          Customer
-                        </p>
-
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center shrink-0">
-                            <User className="w-4 h-4 text-sky-600" />
-                          </div>
-
-                          <span className="text-sm font-semibold text-slate-800 truncate">
-                            {order.customer_username}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Date */}
-                      <div className="mb-4">
-                        <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                          Ordered On
-                        </p>
-
-                        <div className="flex items-center gap-2 text-sm text-slate-600">
-                          <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-
-                          <span>
-                            {new Date(
-                              order.created_at
-                            ).toLocaleDateString('en-IN', {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric',
-                            })}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Shipping */}
-                      <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                          Shipping Address
-                        </p>
-
-                        <div className="flex items-start gap-2">
-                          <MapPin className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
-
-                          <p className="text-sm leading-relaxed text-slate-600">
-                            {order.shipping_address ||
-                              'Registered Address'}
-                          </p>
-                        </div>
-                      </div>
+                  >
+                    <div className="grid lg:grid-cols-5">
 
                       {/* =================================================
-                          STATUS ACTIONS
-                      ================================================== */}
-                      {nextOptions.length > 0 && (
-                        <div className="mt-5 pt-4 border-t border-slate-100">
+                        LEFT — ORDER INFORMATION
+                    ================================================== */}
+                      <div className="lg:col-span-2 p-4 sm:p-5 border-b lg:border-b-0 lg:border-r border-slate-100">
 
-                          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
-                            Update Status
+                        {/* Order Header */}
+                        <div className="flex items-start justify-between gap-3 mb-5">
+
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                              Order
+                            </p>
+
+                            <h2 className="text-lg font-bold text-slate-900 mt-0.5">
+                              #{order.id}
+                            </h2>
+                          </div>
+
+                          <span
+                            className={`
+                            inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+                            border text-[11px] font-semibold capitalize
+                            ${badgeClass}
+                          `}
+                          >
+                            <StatusIcon className="w-3.5 h-3.5" />
+                            {order.status}
+                          </span>
+                        </div>
+
+                        {/* Customer */}
+                        <div className="mb-4">
+                          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                            Customer
                           </p>
 
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center shrink-0">
+                              <User className="w-4 h-4 text-sky-600" />
+                            </div>
 
-                            {nextOptions.map((next) => {
-                              const ActionIcon =
-                                STATUS_ICONS[next];
+                            <span className="text-sm font-semibold text-slate-800 truncate">
+                              {order.customer_username}
+                            </span>
+                          </div>
+                        </div>
 
-                              const isUpdating =
-                                updatingId === order.id;
+                        {/* Date */}
+                        <div className="mb-4">
+                          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                            Ordered On
+                          </p>
 
-                              return (
-                                <button
-                                  key={next}
-                                  onClick={() =>
-                                    handleStatusChange(
-                                      order.id,
-                                      next
-                                    )
-                                  }
-                                  disabled={isUpdating}
-                                  className={`inline-flex items-center gap-1.5
+                          <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+
+                            <span>
+                              {new Date(
+                                order.created_at
+                              ).toLocaleDateString('en-IN', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                              })}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Shipping */}
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                            Shipping Address
+                          </p>
+
+                          <div className="flex items-start gap-2">
+                            <MapPin className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+
+                            <p className="text-sm leading-relaxed text-slate-600">
+                              {order.shipping_address ||
+                                'Registered Address'}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* =================================================
+                          STATUS ACTIONS
+                      ================================================== */}
+                        {nextOptions.length > 0 && (
+                          <div className="mt-5 pt-4 border-t border-slate-100">
+
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
+                              Update Status
+                            </p>
+
+                            <div className="flex flex-wrap gap-2">
+
+                              {nextOptions.map((next) => {
+                                const ActionIcon =
+                                  STATUS_ICONS[next];
+
+                                const isUpdating =
+                                  updatingId === order.id;
+
+                                return (
+                                  <button
+                                    key={next}
+                                    onClick={() =>
+                                      handleStatusChange(
+                                        order.id,
+                                        next
+                                      )
+                                    }
+                                    disabled={isUpdating}
+                                    className={`inline-flex items-center gap-1.5
                                     px-3 py-1.5 rounded-lg text-xs font-semibold capitalize
                                     transition-all duration-200 disabled:opacity-50
                                     disabled:cursor-not-allowed
                                     ${ACTION_STYLES[next]}
                                   `}
-                                >
-                                  {isUpdating ? (
-                                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                                  ) : (
-                                    ActionIcon && (
-                                      <ActionIcon className="w-3.5 h-3.5" />
-                                    )
-                                  )}
+                                  >
+                                    {isUpdating ? (
+                                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                    ) : (
+                                      ActionIcon && (
+                                        <ActionIcon className="w-3.5 h-3.5" />
+                                      )
+                                    )}
 
-                                  {isUpdating
-                                    ? 'Updating...'
-                                    : `Mark as ${next}`}
-                                </button>
-                              );
-                            })}
+                                    {isUpdating
+                                      ? 'Updating...'
+                                      : `Mark as ${next}`}
+                                  </button>
+                                );
+                              })}
 
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
 
-                    {/* =================================================
+                      {/* =================================================
                         RIGHT — PRODUCTS + TOTAL
                     ================================================== */}
-                    <div className="lg:col-span-3 p-4 sm:p-5">
+                      <div className="lg:col-span-3 p-4 sm:p-5">
 
-                      {/* Products Header */}
-                      <div className="flex items-center justify-between mb-3">
+                        {/* Products Header */}
+                        <div className="flex items-center justify-between mb-3">
 
-                        <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                            Order Items
-                          </p>
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                              Order Items
+                            </p>
 
-                          <p className="text-xs text-slate-500 mt-0.5">
-                            {order.items?.length || 0}{' '}
-                            {order.items?.length === 1
-                              ? 'product'
-                              : 'products'}
-                          </p>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              {order.items?.length || 0}{' '}
+                              {order.items?.length === 1
+                                ? 'product'
+                                : 'products'}
+                            </p>
+                          </div>
+
+                          <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center">
+                            <Package className="w-4 h-4 text-slate-400" />
+                          </div>
                         </div>
 
-                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center">
-                          <Package className="w-4 h-4 text-slate-400" />
+                        {/* Product List */}
+                        <div className="rounded-xl border border-slate-200 overflow-hidden bg-white">
+
+                          <div className="max-h-48 overflow-y-auto scrollbar-thin">
+                            <OrderItems items={order.items} />
+                          </div>
+
                         </div>
+
+                        {/* Total */}
+                        <div className="mt-3 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4">
+
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                              Total Amount
+                            </p>
+
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              Final order value
+                            </p>
+                          </div>
+
+                          <p className="text-lg font-bold text-slate-900 whitespace-nowrap">
+                            ₹
+                            {Number(
+                              order.total_amount
+                            ).toLocaleString('en-IN')}
+                          </p>
+
+                        </div>
+
                       </div>
-
-                      {/* Product List */}
-                      <div className="rounded-xl border border-slate-200 overflow-hidden bg-white">
-
-                        <div className="max-h-48 overflow-y-auto scrollbar-thin">
-                          <OrderItems items={order.items} />
-                        </div>
-
-                      </div>
-
-                      {/* Total */}
-                      <div className="mt-3 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4">
-
-                        <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                            Total Amount
-                          </p>
-
-                          <p className="text-xs text-slate-500 mt-0.5">
-                            Final order value
-                          </p>
-                        </div>
-
-                        <p className="text-lg font-bold text-slate-900 whitespace-nowrap">
-                          ₹
-                          {Number(
-                            order.total_amount
-                          ).toLocaleString('en-IN')}
-                        </p>
-
-                      </div>
-
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+
+            <Pagination
+              page={page}
+              setPage={setPage}
+              hasNext={!!pageData.next}
+              hasPrevious={!!pageData.previous}
+              count={pageData.count}
+              pageSize={PAGE_SIZE}
+            />
+
+          </>
         )}
       </div>
     </div>

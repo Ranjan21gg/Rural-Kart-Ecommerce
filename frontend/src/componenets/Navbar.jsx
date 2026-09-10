@@ -396,13 +396,16 @@ export default function Navbar() {
                 </button>
 
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-sky-100 py-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-sky-600 py-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                     <div className="px-4 py-2 border-b border-slate-100">
-                      <p className="text-xs text-slate-400">Signed in as</p>
-                      <p className="text-sm font-bold text-slate-900 truncate">{user.username}</p>
-                      <span className="inline-block mt-0.5 text-[10px] uppercase font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">
-                        {user.role}
-                      </span>
+                      <p className="text-xs font-semibold text-slate-600 pb-1">Signed in as</p>
+                      <p className="text-sm font-bold text-slate-900 truncate flex items-center gap-1">
+                        <User size={14} className="text-blue-500" />{user.username}
+                        <span className="inline-block mt-0.5 text-[10px] uppercase font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">
+                          {user.role}
+                        </span>
+                      </p>
+
                     </div>
 
                     <Link

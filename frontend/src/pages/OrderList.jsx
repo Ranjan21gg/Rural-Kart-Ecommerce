@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect} from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { fetchOrders } from '../services/orders';
 import {
@@ -12,6 +13,7 @@ import {
   ShoppingBag,
 } from 'lucide-react';
 import PageHeader from '../componenets/PageHeader';
+import Pagination from '../componenets/Pagination';
 
 const STATUS_CONFIG = {
   pending: {
@@ -41,15 +43,36 @@ const STATUS_CONFIG = {
   },
 };
 
+const PAGE_SIZE = 5;
+
 export default function OrderList() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [pageData, setPageData] = useState({ count: 0, next: null, previous: null });
+  const page = parseInt(searchParams.get('page') || '1', 10);
 
   useEffect(() => {
-    fetchOrders()
-      .then((res) => setOrders(res.data.results ?? res.data))
+    setLoading(true);
+    fetchOrders({ page })
+      .then((res) => {
+        setOrders(res.data.results ?? res.data);
+        setPageData({
+          count: res.data.count ?? res.data.length,
+          next: res.data.next ?? null,
+          previous: res.data.previous ?? null,
+        });
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [page]);
+
+  const setPage = (updater) => {
+    const newPage = typeof updater === 'function' ? updater(page) : updater;
+    const next = new URLSearchParams(searchParams);
+    next.set('page', newPage);
+    setSearchParams(next);
+  };
 
   if (loading) {
     return (
@@ -92,111 +115,122 @@ export default function OrderList() {
           </div>
         ) : (
           /* Orders Card List */
-          <div className="space-y-4">
-            {orders.map((order) => {
-              // console.log("ORDER:", order);
-              const statusCfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
-              const IconComp = statusCfg.icon;
+          <>
+            <div className="space-y-4">
+              {orders.map((order) => {
+                // console.log("ORDER:", order);
+                const statusCfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
+                const IconComp = statusCfg.icon;
 
-              return (
-                <Link
-                  key={order.id}
-                  to={`/orders/${order.id}`}
-                  className="block bg-white rounded-2xl p-5 border border-slate-200/80 hover:border-sky-300 shadow-sm hover:shadow-lg hover:shadow-sky-500/5 transition-all group"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                return (
+                  <Link
+                    key={order.id}
+                    to={`/orders/${order.id}`}
+                    className="block bg-white rounded-2xl p-5 border border-slate-200/80 hover:border-sky-300 shadow-sm hover:shadow-lg hover:shadow-sky-500/5 transition-all group"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
-                    {/* LEFT — Order Metadata */}
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-extrabold text-slate-900 group-hover:text-sky-600 transition">
-                          Order #{order.id}
-                        </span>
+                      {/* LEFT — Order Metadata */}
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-slate-900 group-hover:text-sky-600 transition">
+                            Order #{order.id}
+                          </span>
 
-                        <span
-                          className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border flex items-center gap-1 ${statusCfg.badgeStyle}`}
-                        >
-                          <IconComp className="w-3 h-3" />
-                          {statusCfg.label}
-                        </span>
-                      </div>
+                          <span
+                            className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border flex items-center gap-1 ${statusCfg.badgeStyle}`}
+                          >
+                            <IconComp className="w-3 h-3" />
+                            {statusCfg.label}
+                          </span>
+                        </div>
 
-                      <div className="flex items-center gap-3 text-xs text-slate-500">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5" />
+                        <div className="flex items-center gap-3 text-xs text-slate-500">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3.5 h-3.5" />
 
-                          {new Date(order.created_at).toLocaleDateString('en-IN', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </span>
+                            {new Date(order.created_at).toLocaleDateString('en-IN', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                          </span>
 
-                        <span>•</span>
+                          <span>•</span>
 
-                        <span>
-                          {order.items?.length || 1} items
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* RIGHT — Products + Total + Action */}
-                    <div className="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100">
-
-                      {/* Product Images */}
-                      <div className="flex items-center">
-                        <div className="flex -space-x-3">
-                          {order.items?.slice(0, 3).map((item) => (
-                            <div
-                              key={item.id}
-                              className="w-11 h-11 rounded-xl bg-slate-100 border-2 border-white overflow-hidden shadow-sm"
-                            >
-                              {item.product_image ? (
-                                <img
-                                  src={item.product_image}
-                                  alt={item.product_name || 'Product'}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-400">
-                                  —
-                                </div>
-                              )}
-                            </div>
-                          ))}
-
-                          {/* Remaining items */}
-                          {order.items?.length > 3 && (
-                            <div className="w-11 h-11 rounded-xl bg-slate-100 border-2 border-white flex items-center justify-center text-xs font-bold text-slate-500 shadow-sm">
-                              +{order.items.length - 3}
-                            </div>
-                          )}
+                          <span>
+                            {order.items?.length || 1} items
+                          </span>
                         </div>
                       </div>
 
-                      {/* Total */}
-                      <div className="text-left sm:text-right">
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                          Total
-                        </span>
+                      {/* RIGHT — Products + Total + Action */}
+                      <div className="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100">
 
-                        <span className="text-lg font-black text-slate-900">
-                          ₹{Number(order.total_amount).toLocaleString('en-IN')}
-                        </span>
+                        {/* Product Images */}
+                        <div className="flex items-center">
+                          <div className="flex -space-x-3">
+                            {order.items?.slice(0, 3).map((item) => (
+                              <div
+                                key={item.id}
+                                className="w-11 h-11 rounded-xl bg-slate-100 border-2 border-white overflow-hidden shadow-sm"
+                              >
+                                {item.product_image ? (
+                                  <img
+                                    src={item.product_image}
+                                    alt={item.product_name || 'Product'}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-400">
+                                    —
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+
+                            {/* Remaining items */}
+                            {order.items?.length > 3 && (
+                              <div className="w-11 h-11 rounded-xl bg-slate-100 border-2 border-white flex items-center justify-center text-xs font-bold text-slate-500 shadow-sm">
+                                +{order.items.length - 3}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Total */}
+                        <div className="text-left sm:text-right">
+                          <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                            Total
+                          </span>
+
+                          <span className="text-lg font-black text-slate-900">
+                            ₹{Number(order.total_amount).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+
+                        {/* Arrow */}
+                        <ChevronRight
+                          className="w-5 h-5 text-slate-400 group-hover:text-sky-600 group-hover:translate-x-1 transition-all shrink-0"
+                        />
+
                       </div>
 
-                      {/* Arrow */}
-                      <ChevronRight
-                        className="w-5 h-5 text-slate-400 group-hover:text-sky-600 group-hover:translate-x-1 transition-all shrink-0"
-                      />
-
                     </div>
+                  </Link>
+                );
+              })}
+            </div>
 
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+            <Pagination
+              page={page}
+              setPage={setPage}
+              hasNext={!!pageData.next}
+              hasPrevious={!pageData.previous}
+              count={pageData.count}
+              pageSize={PAGE_SIZE}
+            />
+          </>
         )}
 
       </div>

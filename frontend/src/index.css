@@ -103,6 +103,10 @@ body {
     50% {
         box-shadow: 0 0 0 7px rgba(245, 158, 11, 0);
     }
+
+    75% {
+        box-shadow: 2 3 4 5px rgba(234, 148, 1, 0.985);
+    }
 }
 
 .animate-ai-ring {

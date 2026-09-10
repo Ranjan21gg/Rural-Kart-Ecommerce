@@ -1,17 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { fetchProducts, fetchCategories } from '../services/products';
 import ProductCard from '../componenets/ProductCard';
 import HeroSection from '../componenets/HeroSection';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import {
   SlidersHorizontal,
   ShoppingBag,
   RotateCcw,
 } from 'lucide-react';
 
+const SORT_MAP = {
+  'price-low': 'price',
+  'price-high': '-price',
+  featured: '-created_at',
+};
+
 export default function ProductList() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -20,28 +30,40 @@ export default function ProductList() {
   const sortBy = searchParams.get('sort') || 'featured';
 
   useEffect(() => {
-    fetchCategories().then((res) => setCategories(res.data));
+    fetchCategories().then((res) => setCategories(res.data.results ??res.data));
   }, []);
+
+  // Whenever a filter changes, start over from page 1
+  useEffect(() => {
+    setProducts([]);
+    setPage(1);
+    setHasMore(true);
+    setInitialLoading(true);
+  }, [search, categorySlug, sortBy]);
 
   useEffect(() => {
     setLoading(true);
-    const params = {};
+    const params = { page, ordering: SORT_MAP[sortBy] };
     if (search) params.search = search;
     if (categorySlug) params.category__slug = categorySlug;
 
     fetchProducts(params)
       .then((res) => {
         let items = res.data.results ?? res.data;
-        // Sort items in frontend if needed
-        if (sortBy === 'price-low') {
-          items = [...items].sort((a, b) => Number(a.price) - Number(b.price));
-        } else if (sortBy === 'price-high') {
-          items = [...items].sort((a, b) => Number(b.price) - Number(a.price));
-        }
-        setProducts(items);
+        setProducts((prev) => (page === 1 ? items : [...prev, ...items]));
+        setHasMore(!!res.data.next);
       })
-      .finally(() => setLoading(false));
-  }, [search, categorySlug, sortBy]);
+      .finally(() => {
+        setLoading(false);
+        setInitialLoading(false);
+      });
+  }, [search, categorySlug, sortBy, page]);
+
+  const loadMore = useCallback(() => {
+    setPage((p) => p + 1);
+  }, []);
+
+  const sentinelRef = useInfiniteScroll(loadMore, hasMore, loading);
 
   const updateParam = (key, value) => {
     const next = new URLSearchParams(searchParams);
@@ -119,7 +141,7 @@ export default function ProductList() {
         </div>
 
         {/* Product Grid / Loading State / Empty State */}
-        {loading ? (
+        {initialLoading ? (
           /* Skeleton Loader */
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
             {[...Array(10)].map((_, i) => (
@@ -166,6 +188,16 @@ export default function ProductList() {
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
+
+            <div ref={sentinelRef} className="h-4" />
+
+            {loading && !initialLoading && (
+              <p className="text-center text-slate-500 text-sm py-6">Loading more...</p>
+            )}
+            {!hasMore && products.length > 0 && (
+              <p className="text-center text-slate-400 text-sm py-6">You've reached the end.</p>
+            )}
+
           </>
         )}
 
