@@ -45,7 +45,7 @@ export default function AdminProducts() {
   // Page open and Product and Category Fetched
   useEffect(() => {
     loadProducts();
-    fetchCategories().then((res) => setCategories(res.data));
+    fetchCategories().then((res) => setCategories(res.data.results ?? res.data));
   }, []);
 
 
