@@ -35,6 +35,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(','
 
 HF_TOKEN = os.getenv('HF_TOKEN')
 HF_MODEL = os.getenv('HF_MODEL')
+DEBUG_AI = os.getenv("DEBUG_AI", "false").lower() == "true"
 
 # Authenticated User
 AUTH_USER_MODEL = 'users.User'

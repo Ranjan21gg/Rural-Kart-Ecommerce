@@ -3,13 +3,19 @@ services:
     name: ruralkart-backend
     env: python
     buildCommand: |
-      pip install -r requirements.txt
+      pip install uv
+      uv pip install -r <(uv pip compile pyproject.toml)
     startCommand: |
       gunicorn rural_kart.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: HF_TOKEN
-        sync: false
+        sync: false   # paste your Hugging Face token in Render dashboard
       - key: HF_MODEL
         value: mistralai/Mistral-7B-Instruct
       - key: DEBUG_AI
         value: false
+
+databases:
+  - name: ruralkart-db
+    databaseName: ruralkart
+    user: ruralkart
