@@ -30,19 +30,11 @@ export default function ProductList() {
   const sortBy = searchParams.get('sort') || 'featured';
 
   useEffect(() => {
-    fetchCategories().then((res) => setCategories(res.data.results ??res.data));
+    fetchCategories().then((res) => setCategories(res.data.results ?? res.data));
   }, []);
 
   // Whenever a filter changes, start over from page 1
   useEffect(() => {
-    setProducts([]);
-    setPage(1);
-    setHasMore(true);
-    setInitialLoading(true);
-  }, [search, categorySlug, sortBy]);
-
-  useEffect(() => {
-    setLoading(true);
     const params = { page, ordering: SORT_MAP[sortBy] };
     if (search) params.search = search;
     if (categorySlug) params.category__slug = categorySlug;

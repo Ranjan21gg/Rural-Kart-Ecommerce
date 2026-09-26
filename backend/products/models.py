@@ -24,6 +24,8 @@ class Category(models.Model):
     hero_title = models.CharField(max_length=200, blank=True)
     hero_description = models.TextField(blank=True)
 
+    class Meta:
+        ordering = ['id']
 
     def save(self, *args, **kwargs):
         if not self.slug:

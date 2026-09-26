@@ -28,6 +28,9 @@ services:
 # Backend service
   backend:
     build: ./backend
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     env_file: ./backend/.env
     depends_on:
       - db

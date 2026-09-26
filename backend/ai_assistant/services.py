@@ -1,11 +1,15 @@
 from django.conf import settings
-from openai import OpenAI
+# from openai import OpenAI
+import requests
 import json
 
 
-client = OpenAI(
-    api_key=settings.OPENAI_API_KEY
-)
+# client = OpenAI(
+#     api_key=settings.OPENAI_API_KEY
+# )
+
+HF_API_URL = f"https://api-inference.huggingface.co/models/{settings.HF_MODEL}"
+HF_HEADERS = {"Authorization": f"Bearer {settings.HF_TOKEN}"}
 
 
 def ask_ruralkart_ai(user_message, products):
@@ -55,23 +59,31 @@ Rules:
 10. Prices are in Indian Rupees (INR).
 """
 
-    response = client.responses.create(
-        model="gpt-5.6-luna",
-        input=prompt,
-    )
+    # response = client.responses.create(
+    #     model="gpt-5.6-luna",
+    #     input=prompt,
+    # )
 
-    text = response.output_text.strip()
-
+    # text = response.output_text.strip()
     try:
-        data = json.loads(text)
+        resp = requests.post(HF_API_URL, headers=HF_HEADERS, json={"inputs": prompt})
+        resp.raise_for_status()
+        text = resp.json().get("response", "").strip()
 
+        try:
+                data = json.loads(text)
+        
+                return {
+                    "answer": data.get("answer", ""),
+                    "product_ids": data.get("product_ids", []),
+                }
+        except json.JSONDecodeError:
+                return {
+                    "answer": text,
+                    "product_ids": [],
+                }
+    except requests.exceptions.RequestException as e:
         return {
-            "answer": data.get("answer", ""),
-            "product_ids": data.get("product_ids", []),
-        }
-
-    except json.JSONDecodeError:
-        return {
-            "answer": text,
+            "answer": f"Error contacting AI service: {e}",
             "product_ids": [],
         }

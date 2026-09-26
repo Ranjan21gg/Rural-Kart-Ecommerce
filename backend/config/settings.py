@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,7 +31,10 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
-OPENAI_API_KEY = config('OPENAI_API_KEY')
+# OPENAI_API_KEY = config('OPENAI_API_KEY')
+
+HF_TOKEN = os.getenv('HF_TOKEN')
+HF_MODEL = os.getenv('HF_MODEL')
 
 # Authenticated User
 AUTH_USER_MODEL = 'users.User'

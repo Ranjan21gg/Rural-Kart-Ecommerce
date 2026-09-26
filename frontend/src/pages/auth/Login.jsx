@@ -26,7 +26,7 @@ export default function Login() {
     try {
       await login(username, password);
       navigate('/');
-    } catch {y
+    } catch {
       setError('Invalid username or password credentials.');
     } finally {
       setSubmitting(false);

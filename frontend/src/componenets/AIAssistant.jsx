@@ -5,7 +5,6 @@ import {
     Send,
     Bot,
     Loader2,
-    X,
     Sparkles,
     Minimize2,
 } from 'lucide-react';
@@ -258,6 +257,7 @@ export default function AIAssistant() {
                                 >
                                     <div
                                         className={`max-w-[88%] px-4 py-3 rounded-2xl text-sm
+                                            overflow-x-auto
                                             ${item.role === 'user' ?
                                                 `bg-sky-500 text-white rounded-br-md`
                                                 : `bg-white border border-slate-200

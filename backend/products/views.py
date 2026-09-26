@@ -11,6 +11,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializers
     permission_classes = [IsAdminOrReadOnly]
+    ordering = ['id']
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter()

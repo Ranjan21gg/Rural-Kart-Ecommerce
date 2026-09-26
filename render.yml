@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ruralkart-backend
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+    startCommand: |
+      gunicorn rural_kart.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: HF_TOKEN
+        sync: false
+      - key: HF_MODEL
+        value: mistralai/Mistral-7B-Instruct
+      - key: DEBUG_AI
+        value: false
