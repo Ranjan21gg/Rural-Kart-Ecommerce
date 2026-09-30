@@ -6,7 +6,7 @@ services:
       pip install uv
       uv pip install -r <(uv pip compile pyproject.toml)
     startCommand: |
-      gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+      python -m gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: HF_TOKEN
         sync: false   # paste your Hugging Face token in Render dashboard
