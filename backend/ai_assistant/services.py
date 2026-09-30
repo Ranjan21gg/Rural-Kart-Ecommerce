@@ -1,16 +1,9 @@
-from django.conf import settings
-# from openai import OpenAI
 import requests
 import json
-
-
-# client = OpenAI(
-#     api_key=settings.OPENAI_API_KEY
-# )
+from django.conf import settings
 
 HF_API_URL = f"https://api-inference.huggingface.co/models/{settings.HF_MODEL}"
 HF_HEADERS = {"Authorization": f"Bearer {settings.HF_TOKEN}"}
-
 
 def ask_ruralkart_ai(user_message, products):
     product_context = "\n".join(
@@ -44,46 +37,27 @@ Return ONLY valid JSON in exactly this format:
     "answer": "A short helpful response to the customer.",
     "product_ids": [1, 2]
 }}
-
-Rules:
-
-1. Recommend ONLY products from the provided product list.
-2. Never invent a product.
-3. Never invent a price.
-4. Never invent stock information.
-5. Never recommend a product with stock 0.
-6. product_ids must contain only IDs from the provided product list.
-7. Recommend the best 1–3 matching products.
-8. If nothing matches, return an empty product_ids array.
-9. Keep the answer concise and conversational.
-10. Prices are in Indian Rupees (INR).
 """
 
-    # response = client.responses.create(
-    #     model="gpt-5.6-luna",
-    #     input=prompt,
-    # )
-
-    # text = response.output_text.strip()
     try:
-        resp = requests.post(HF_API_URL, headers=HF_HEADERS, json={"inputs": prompt})
+        resp = requests.post(HF_API_URL, headers=HF_HEADERS, json={"inputs": prompt}, timeout=30)
         resp.raise_for_status()
-        text = resp.json().get("response", "").strip()
+        data = resp.json()
+
+        # Hugging Face returns a list of dicts with 'generated_text'
+        if isinstance(data, list) and "generated_text" in data[0]:
+            text = data[0]["generated_text"].strip()
+        else:
+            text = str(data)
 
         try:
-                data = json.loads(text)
-        
-                return {
-                    "answer": data.get("answer", ""),
-                    "product_ids": data.get("product_ids", []),
-                }
+            parsed = json.loads(text)
+            return {
+                "answer": parsed.get("answer", ""),
+                "product_ids": parsed.get("product_ids", []),
+            }
         except json.JSONDecodeError:
-                return {
-                    "answer": text,
-                    "product_ids": [],
-                }
+            return {"answer": text, "product_ids": []}
+
     except requests.exceptions.RequestException as e:
-        return {
-            "answer": f"Error contacting AI service: {e}",
-            "product_ids": [],
-        }
+        return {"answer": f"Error contacting AI service: {e}", "product_ids": []}
