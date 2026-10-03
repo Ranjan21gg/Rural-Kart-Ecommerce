@@ -36,7 +36,7 @@ export const updateProduct = (slug, data) => {
   return api.patch(`/products/${slug}/`, formData);
 };
 
-export const deleteProduct = (id) => api.delete(`/products/${id}/`);
+export const deleteProduct = (slug) => api.delete(`/products/${slug}/`);
 
 export const fetchAllOrders = (params = {}) => api.get('/orders/admin/', { params });
 export const updateOrderStatus = (orderId, status) =>

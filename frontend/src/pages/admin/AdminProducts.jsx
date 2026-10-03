@@ -119,9 +119,9 @@ export default function AdminProducts() {
     setShowModal(false);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (slug) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
-    await deleteProduct(id);
+    await deleteProduct(slug);
     loadProducts();
   };
 
@@ -301,7 +301,7 @@ export default function AdminProducts() {
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(p.id)}
+                          onClick={() => handleDelete(p.slug)}
                           className="p-2 rounded-xl bg-rose-50 cursor-pointer
                            hover:bg-rose-100 text-rose-600 transition"
                           title="Delete Product"
