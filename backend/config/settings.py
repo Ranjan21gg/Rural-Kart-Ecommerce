@@ -33,9 +33,23 @@ DEBUG = True
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 # OPENAI_API_KEY = config('OPENAI_API_KEY')
 
-HF_TOKEN = os.getenv('HF_TOKEN')
-HF_MODEL = os.getenv('HF_MODEL')
-DEBUG_AI = os.getenv("DEBUG_AI", "false").lower() == "true"
+GEMINI_API_KEY = config("GEMINI_API_KEY", default="")
+GEMINI_MODEL = config(
+    "GEMINI_MODEL",
+    default="gemini-2.5-flash-lite"
+)
+
+GROQ_API_KEY = config("GROQ_API_KEY", default="")
+GROQ_MODEL = config(
+    "GROQ_MODEL",
+    default="openai/gpt-oss-20b"
+)
+
+DEBUG_AI = config(
+    "DEBUG_AI",
+    default=False,
+    cast=bool
+)
 
 # Authenticated User
 AUTH_USER_MODEL = 'users.User'
