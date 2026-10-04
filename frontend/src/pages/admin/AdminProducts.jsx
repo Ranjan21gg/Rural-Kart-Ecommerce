@@ -162,32 +162,32 @@ export default function AdminProducts() {
 
         {/* Executive Stats Bar */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div className="bg-sky-300 p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold">
               <Package className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-xs font-bold uppercase text-slate-400">Total Products</span>
+              <span className="text-xs font-bold uppercase text-slate-600">Total Products</span>
               <span className="text-2xl font-black text-slate-900 block">{products.length}</span>
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div className="bg-amber-200 p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-xs font-bold uppercase text-slate-400">Low Stock Items</span>
+              <span className="text-xs font-bold uppercase text-slate-600">Low Stock Items</span>
               <span className="text-2xl font-black text-amber-700 block">{lowStockCount}</span>
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
+          <div className="bg-green-200 p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
               <Tag className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-xs font-bold uppercase text-slate-400">Active Categories</span>
+              <span className="text-xs font-bold uppercase text-slate-600">Active Categories</span>
               <span className="text-2xl font-black text-slate-900 block">{categories.length}</span>
             </div>
           </div>
@@ -195,8 +195,9 @@ export default function AdminProducts() {
 
         {/* Search Bar */}
         <div className="mb-6 w-full sm:w-xl bg-white p-3 rounded-2xl
-         border border-slate-200/80 shadow-sm 
-         flex items-center gap-3">
+         border border-sky-200/80 shadow-sm 
+         flex items-center gap-3
+         focus-within:ring-1 focus-within:ring-sky-200">
           <Search className="w-5 h-5 text-slate-400 ml-2" />
           <input
             type="text"
@@ -208,114 +209,142 @@ export default function AdminProducts() {
         </div>
 
         {/* Product Table Container */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
-                <tr>
-                  <th className="px-6 py-4">Product Name</th>
-                  <th className="px-6 py-4">Category</th>
-                  <th className="px-6 py-4">Price</th>
-                  <th className="px-6 py-4">Stock Level</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredProducts.map((p) => (
-                  <tr key={p.id} className="hover:bg-sky-50/40 transition">
 
-                    {/* product details*/}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
+        {/* Product Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5">
+          {filteredProducts.map((p) => (
+            <div key={p.id} className="bg-sky-100 rounded-2xl border-2 border-slate-200 shadow-sm hover:shadow-2xl hover:border-sky-200 transition-all duration-200 overflow-hidden">
 
-                        {/* Product Image */}
-                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
-                          {p.image ? (
-                            <img
-                              src={p.image}
-                              alt={p.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">
-                              No image
-                            </div>
-                          )}
-                        </div>
+              {/* Product Image */}
+              <div className="relative w-full h-48 bg-slate-100 overflow-hidden">
+                {p.image ? (
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-sm text-slate-400">
+                    <div className="text-center">
+                      <Package className="w-8 h-8 mx-auto mb-1 text-slate-300" />
+                      No image
+                    </div>
+                  </div>
+                )}
 
-                        {/* Product Info */}
-                        <div className="min-w-0">
-                          <p className="font-semibold text-slate-900 truncate max-w-xs">
-                            {p.name}
-                          </p>
+                {/* Status Badge */}
+                <div className="absolute top-3 right-3">
+                  {p.is_active ? (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-50/95 text-emerald-700 text-[10px] font-bold shadow-sm backdrop-blur-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                      Active
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100/95 text-slate-500 text-[10px] font-bold shadow-sm backdrop-blur-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
+                      Inactive
+                    </span>
+                  )}
+                </div>
+              </div>
 
-                          <p className="text-xs text-slate-400 mt-0.5">
-                            Product #{p.id}
-                          </p>
-                        </div>
+              {/* Product Content */}
+              <div className="p-4">
 
-                      </div>
-                    </td>
+                {/* Product Name + ID */}
+                <div className="mb-3">
+                  <h3 className="font-bold text-slate-900 text-base leading-5 line-clamp-2">
+                    {p.name}
+                  </h3>
 
-                    <td className="px-6 py-4 text-xs">
-                      <span className="bg-slate-100 text-slate-700 font-semibold px-2.5 py-1 rounded-full">
-                        {p.category?.name || 'Uncategorized'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 font-extrabold text-slate-900">
+                  <p className="text-[11px] text-slate-600 mt-1">
+                    Product #{p.id}
+                  </p>
+                </div>
+
+                {/* Category */}
+                <div className="mb-4">
+                  <span className="inline-flex items-center bg-sky-50 text-sky-700 font-semibold px-2.5 py-1 rounded-lg text-[10px]">
+                    <Tag className="w-3 h-3 mr-1" />
+                    {p.category?.name || 'Uncategorized'}
+                  </span>
+                </div>
+
+                {/* Price + Stock */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+
+                  {/* Price */}
+                  <div className="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5">
+                    <p className="text-[10px] uppercase tracking-wider font-bold text-slate-600">
+                      Price
+                    </p>
+
+                    <p className="text-base font-black text-slate-900 mt-0.5">
                       ₹{Number(p.price).toLocaleString('en-IN')}
-                    </td>
-                    <td className="px-6 py-4 text-xs font-semibold">
-                      {p.stock_quantity === 0 ? (
-                        <span className="text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full">Out of stock</span>
-                      ) : p.stock_quantity <= 5 ? (
-                        <span className="text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full">Low ({p.stock_quantity})</span>
-                      ) : (
-                        <span className="text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">{p.stock_quantity} available</span>
-                      )}
-                    </td>
+                    </p>
+                  </div>
 
-                    <td className="px-6 py-4">
-                      {p.is_active ? (
-                        <span className="inline-flex items-center px-2.5 py-1 
-                        rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-1
-                         rounded-full bg-slate-100 text-slate-500 text-xs font-bold">
-                          Inactive
-                        </span>
-                      )}
-                    </td>
+                  {/* Stock */}
+                  <div className="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5">
+                    <p className="text-[10px] uppercase tracking-wider font-bold text-slate-600">
+                      Stock
+                    </p>
 
-                    <td className="px-6 py-4 text-right">
-                      <div className="inline-flex items-center gap-2">
-                        <button
-                          onClick={() => handleEdit(p)}
-                          className="p-2 rounded-xl bg-slate-100 cursor-pointer
-                           hover:bg-sky-100 text-sky-700 transition"
-                          title="Edit Product"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(p.slug)}
-                          className="p-2 rounded-xl bg-rose-50 cursor-pointer
-                           hover:bg-rose-100 text-rose-600 transition"
-                          title="Delete Product"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    {p.stock_quantity === 0 ? (
+                      <p className="text-xs font-bold text-rose-600 mt-1">
+                        Out of stock
+                      </p>
+                    ) : p.stock_quantity <= 5 ? (
+                      <p className="text-xs font-bold text-amber-700 mt-1">
+                        Low ({p.stock_quantity})
+                      </p>
+                    ) : (
+                      <p className="text-xs font-bold text-emerald-700 mt-1">
+                        {p.stock_quantity} available
+                      </p>
+                    )}
+                  </div>
+
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-2">
+
+                  <button
+                    onClick={() => handleEdit(p)}
+                    className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-sky-700 text-xs font-bold cursor-pointer transition"
+                    title="Edit Product"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Edit Product
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(p.slug)}
+                    className="inline-flex items-center justify-center p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer transition"
+                    title="Delete Product"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+
+                </div>
+
+              </div>
+            </div>
+          ))}
+
+          {/* Empty State */}
+          {filteredProducts.length === 0 && (
+            <div className="col-span-full bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
+              <Package className="w-10 h-10 mx-auto text-slate-300 mb-3" />
+
+              <p className="text-sm font-bold text-slate-600">
+                No products found
+              </p>
+
+              <p className="text-xs text-slate-400 mt-1">
+                Try changing your search or add a new product.
+              </p>
+            </div>
+          )}
         </div>
+
 
         {/* Modal Overlay Dialog for Add/Edit */}
         {showModal && (

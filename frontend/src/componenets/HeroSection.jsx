@@ -23,7 +23,7 @@ export default function HeroSection({
       <div className="border-b border-sky-100 bg-white/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          <div className="flex items-center gap-3 h-14 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-3 h-14  scrollbar-hide">
 
             {/* Category Label */}
             <div className="hidden sm:flex items-center gap-2 shrink-0 pr-4 border-r border-slate-200">
@@ -53,6 +53,7 @@ export default function HeroSection({
             </button>
 
             {/* Categories */}
+            <div id='categories' className='flex gap-4 overflow-x-auto'>
             {categories.map((cat) => (
               <button
                 key={cat.id}
@@ -70,6 +71,7 @@ export default function HeroSection({
                 {cat.name}
               </button>
             ))}
+            </div>
 
             {/* Scroll hint */}
             <div className="hidden md:flex ml-auto shrink-0 items-center gap-1 text-slate-400">

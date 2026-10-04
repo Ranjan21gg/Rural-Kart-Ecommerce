@@ -30,6 +30,10 @@ body {
 }
 }
 
+#categories::-webkit-scrollbar{
+  display: none;
+}
+
 /* Custom 2026 Design System Utility Classes */
 /* @utility bg-mesh-sky {
   background-image:

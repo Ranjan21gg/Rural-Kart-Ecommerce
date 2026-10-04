@@ -32,17 +32,28 @@ export default function Navbar() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
 
+  // Centralized input change handler to sync state on UI interactions safely
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    // Synchronously clear state in the event handler if the query is too short
+    if (value.trim().length < 2) {
+      setSuggestions([]);
+      setSearchLoading(false);
+    }
+  };
 
   useEffect(() => {
     const query = searchQuery.trim();
 
     if (query.length < 2) {
-      setSuggestions([]);
-      setSearchLoading(false);
+      // setSuggestions([]);
+      // setSearchLoading(false);
       return;
     }
 
-    setSearchLoading(true);
+    // setSearchLoading(true);
 
     const timer = setTimeout(async () => {
       try {
@@ -174,7 +185,7 @@ export default function Navbar() {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={() => handleSearchChange}
                   onFocus={() => setSearchFocused(true)}
                   placeholder="Search for products, crafts & more..."
                   className="w-full bg-transparent border-none outline-none
