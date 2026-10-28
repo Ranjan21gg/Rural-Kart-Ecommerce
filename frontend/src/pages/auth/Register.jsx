@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-  ShoppingBag,
   User,
   Mail,
   Lock,
@@ -10,7 +9,6 @@ import {
   EyeOff,
   AlertCircle,
   ArrowRight,
-  Sparkles,
 } from 'lucide-react';
 
 export default function Register() {

@@ -7,7 +7,6 @@ import {
   Star,
   Check,
   Package,
-  AlertCircle,
 } from 'lucide-react';
 
 export default function ProductCard({ product }) {
