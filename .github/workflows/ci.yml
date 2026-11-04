@@ -58,6 +58,9 @@ jobs:
       CLOUDINARY_CLOUD_NAME: dummy_cloud
       CLOUDINARY_API_KEY: dummy_key
       CLOUDINARY_API_SECRET: dummy_secret
+
+      RURAL_KART_LOGO_URL: https://example.com/ci-logo.png
+
       BREVO_API_KEY: dummy_brevo_api_key
       DEFAULT_FROM_EMAIL: ci@example.com
 
