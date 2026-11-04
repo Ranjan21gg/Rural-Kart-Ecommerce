@@ -58,6 +58,7 @@ jobs:
       CLOUDINARY_CLOUD_NAME: dummy_cloud
       CLOUDINARY_API_KEY: dummy_key
       CLOUDINARY_API_SECRET: dummy_secret
+      BREVO_API_KEY: dummy_brevo_api_key
 
       CELERY_BROKER_URL: redis://localhost:6379/0
       CELERY_RESULT_BACKEND: redis://localhost:6379/0
